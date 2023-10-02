@@ -6,8 +6,8 @@ public class Position {
 
     //E responsavel para mostrar x - linha e com letra e y - numeros.
     public Position() {
-        this.column = 1;
-        this.row = 1;
+        this.row = 9;
+        this.column = 9;
     }
 
     public Position(int x, int y) {
@@ -17,7 +17,7 @@ public class Position {
 
     @Override
     public String toString() {
-        return "" + column + row;
+        return row + ":" + column;
     }
 
     public int getColumn() {

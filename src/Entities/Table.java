@@ -1,13 +1,11 @@
 package Entities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.SQLOutput;
+import java.util.*;
 
 public class Table {
     private static final Piece[][] matrix = new Piece[8][8];
-    private int numberWhitePieces = 12;
-    private int numberBlackPieces = 12;
+
 
     public Table() {
         creatingPieces();
@@ -25,7 +23,7 @@ public class Table {
                     if (i > 4) {
                         team = "black";
                     }
-                    Piece piece = new Piece("PAWN"+count, position, team);
+                    Piece piece = new Piece("", position, team);
 
                     if (i % 2 == 0 && j % 2 == 1 ) {
                         matrix[i][j] = piece;
@@ -61,113 +59,166 @@ public class Table {
         return matrix[row][column];
     }
 
-    public void verifyPlay(int rowPiece, int columnPiece, int newRow, int newColumn){
+    public String userPlay(String turn, ArrayList<Position> arrayPositions, Position positionTryedParam, int rowPiece, int columnPiece) {
         Piece choosedPiece = this.getPiece(rowPiece, columnPiece);
-        ArrayList<Map<String, Object>> leftUpDiagonal = getLeftUpDiagonals(rowPiece, columnPiece);
-        ArrayList<Map<String, Object>> rightUpDiagonal = getRightUpDiagonals(rowPiece, columnPiece);
-        ArrayList<Map<String, Object>> rightDownDiagonal = getRightDownDiagonals(rowPiece, columnPiece);
-        ArrayList<Map<String, Object>> leftDownDiagonal = getLeftDownDiagonals(rowPiece, columnPiece);
-        choosedPiece.changePosition(
-                leftUpDiagonal,
-                rightUpDiagonal,
-                rightDownDiagonal,
-                leftDownDiagonal,
-                newRow,
-                newColumn
-        );
-    }
 
-    public ArrayList<Map<String, Object>> getLeftUpDiagonals(int row, int column) {
-        ArrayList<Map<String, Object>> leftUpList = new ArrayList<>();
+        if (!Objects.equals(choosedPiece.team, turn)) {
+            return "Não é sua vez!";
+        }
 
-        // min(row) - min(column)
-        for (int i = row; i >= 0; i--){
-            for (int j = column; j >= 0; j--){
-                int diferenceX = i - row;
-                int diferenceY = j - column;
-                if ( Math.abs(diferenceY) == Math.abs(diferenceX)) {
-                    Map<String, Object> leftUp = new HashMap<String, Object>();
-                    leftUp.put("row", String.valueOf(i));
-                    leftUp.put("column", String.valueOf(i));
-                    leftUp.put("piece", matrix[i][j]);
+        Position positionTryed = positionTryedParam;
+        int newRow = positionTryed.getRow();
+        int newColumn = positionTryed.getColumn();
 
-                    leftUpList.add(leftUp);
+        if (arrayPositions.get(0).getRow() == newRow && arrayPositions.get(0).getColumn() == newColumn) {
+            Piece piece = this.getPiece(rowPiece-1, columnPiece-1);
+            choosedPiece.setPosition(positionTryed);
+            if (piece != null) {
+                String teamDied = piece.team;
+                matrix[rowPiece-1][columnPiece-1] = null;
+                if (Objects.equals(teamDied, "white")) {
+                    return "white";
+                } else {
+                    return "black";
                 }
+            }
+            return "Não comeu";
+        } else if (arrayPositions.get(1).getRow() == newRow && arrayPositions.get(1).getColumn() == newColumn) {
+            Piece piece = this.getPiece(rowPiece-1, columnPiece+1);
+            choosedPiece.setPosition(positionTryed);
+            if (piece != null) {
+                String teamDied = piece.team;
+                matrix[rowPiece-1][columnPiece+1] = null;
+                if (Objects.equals(teamDied, "white")) {
+                    return "white";
+                } else {
+                    return "black";
+                }
+            }
+
+            return "Não comeu";
+        } else if (arrayPositions.get(2).getRow() == newRow && arrayPositions.get(2).getColumn() == newColumn) {
+            Piece piece = this.getPiece(rowPiece+1, columnPiece-1);
+            choosedPiece.setPosition(positionTryed);
+            if (piece != null) {
+                String teamDied = piece.team;
+                matrix[rowPiece+1][columnPiece-1] = null;
+                if (Objects.equals(teamDied, "white")) {
+                    return "white";
+                } else {
+                    return "black";
+                }
+            }
+
+            return "Não comeu";
+        } else if (arrayPositions.get(3).getRow() == newRow && arrayPositions.get(3).getColumn() == newColumn) {
+            Piece piece = this.getPiece(rowPiece+1, columnPiece+1);
+            choosedPiece.setPosition(positionTryed);
+            if (piece != null) {
+                String teamDied = piece.team;
+                matrix[rowPiece+1][columnPiece+1] = null;
+                if (Objects.equals(teamDied, "white")) {
+                    return "white";
+                } else {
+                    return "black";
+                }
+            }
+
+            return "Não comeu";
+        } else {
+            System.out.println("Escolha uma opção válida");
+        }
+
+        return "Deu alguma coisa errado";
+    }
+    public ArrayList<Position> getAllPossibilities(int rowPiece, int columnPiece) {
+        ArrayList<Position> arrayPositions = new ArrayList<Position>() ;
+
+        Piece choosedPiece = this.getPiece(rowPiece, columnPiece);
+        Position position1 = new Position();
+        Position position2 = new Position();
+        Position position3 = new Position();
+        Position position4 = new Position();
+
+        for (int i = 0; i < 4; i++) {
+            switch (i) {
+                case 0:
+                    position1 = this.tryPossibilities(rowPiece, columnPiece, "NEGATIVE", "NEGATIVE");
+                    arrayPositions.add(position1);
+                    break;
+                case 1:
+                    position2 = this.tryPossibilities(rowPiece, columnPiece, "NEGATIVE", "POSITIVE");
+                    arrayPositions.add(position2);
+                    break;
+                case 2:
+                    position3 = this.tryPossibilities(rowPiece, columnPiece, "POSITIVE", "NEGATIVE");
+                    arrayPositions.add(position3);
+                    break;
+                case 3:
+                    position4 = this.tryPossibilities(rowPiece, columnPiece, "POSITIVE", "POSITIVE");
+                    arrayPositions.add(position4);
+                    break;
             }
         }
 
-        return leftUpList;
+        return arrayPositions;
     }
 
-    public ArrayList<Map<String, Object>> getRightUpDiagonals(int row, int column) {
-        ArrayList<Map<String, Object>> rightUpList = new ArrayList<>();
+    public Position tryPossibilities(int rowPiece, int columnPiece, String operationRow, String operationColumn) {
+        Piece choosedPiece = this.getPiece(rowPiece, columnPiece);
+        Position position = new Position();
+        int rowPlay;
+        int rowEat;
+        int columnPlay;
+        int columnEat;
 
-        // min(row) - max(column)
-        for (int i = row; i >= 0; i--){
-            for (int j = column; j < 8; j++){
-                int diferenceX = i - row;
-                int diferenceY = j - column;
-                if ( Math.abs(diferenceY) == Math.abs(diferenceX)) {
-                    Map<String, Object> rightUp = new HashMap<String, Object>();
-                    rightUp.put("row", String.valueOf(i));
-                    rightUp.put("column", String.valueOf(i));
-                    rightUp.put("piece", matrix[i][j]);
-
-                    rightUpList.add(rightUp);
-                }
-            }
+        if (operationRow == "NEGATIVE") {
+            rowPlay = rowPiece-1;
+            rowEat = rowPiece-2;
+        } else {
+            rowPlay = rowPiece+1;
+            rowEat = rowPiece+2;
         }
 
-        return rightUpList;
-    }
-
-    public ArrayList<Map<String, Object>> getRightDownDiagonals(int row, int column) {
-        ArrayList<Map<String, Object>> rightDownList = new ArrayList<>();
-
-        // max(row) - min(column)
-        for (int i = row; i < 8; i++){
-            for (int j = column; j >= 0; j--){
-                int diferenceX = i - row;
-                int diferenceY = j - column;
-                if ( Math.abs(diferenceY) == Math.abs(diferenceX)) {
-                    Map<String, Object> rightDown = new HashMap<String, Object>();
-                    rightDown.put("row", String.valueOf(i));
-                    rightDown.put("column", String.valueOf(i));
-                    rightDown.put("piece", matrix[i][j]);
-
-                    rightDownList.add(rightDown);
-                }
-            }
+        if (operationColumn == "NEGATIVE") {
+            columnPlay = columnPiece-1;
+            columnEat = columnPiece-2;
+        } else {
+            columnPlay = columnPiece+1;
+            columnEat = columnPiece+2;
         }
 
-        return rightDownList;
-    }
+        try {
+            Piece piece = this.getPiece(rowPlay, columnPlay);
 
-    public ArrayList<Map<String, Object>> getLeftDownDiagonals(int row, int column) {
-        ArrayList<Map<String, Object>> leftDownList = new ArrayList<>();
+            if (piece != null && !Objects.equals(piece.team, choosedPiece.team)) {
+                try {
+                    Piece piece2 = this.getPiece(rowEat, columnEat);
 
-        // max(row) - max(column)
-        for (int i = row; i < 8; i++){
-            for (int j = column; j < 8; j++){
-                int diferenceX = i - row;
-                int diferenceY = j - column;
-                if ( Math.abs(diferenceY) == Math.abs(diferenceX)) {
-                    Map<String, Object> leftDown = new HashMap<String, Object>();
-                    leftDown.put("row", String.valueOf(i));
-                    leftDown.put("column", String.valueOf(i));
-                    leftDown.put("piece", matrix[i][j]);
-
-                    leftDownList.add(leftDown);
-                }
+                    if (piece2 == null) {
+                        position.setRow(rowEat);
+                        position.setColumn(columnEat);
+                    }
+                } catch (Exception ignored) {}
+            } else if (piece == null) {
+                position.setRow(rowPlay);
+                position.setColumn(columnPlay);
             }
-        }
+        } catch (Exception ignored) {}
 
-        return leftDownList;
+        return position;
     }
 
     @Override
     public String toString() {
+        for (int n = 0; n < 8; n++) {
+            System.out.printf("| %15d ",  n);
+        }
+        System.out.println();
+
         for (int i = 0; i < 8; i++) {
+            System.out.print(i);
+
             for (int j = 0; j < 8; j++) {
                 System.out.printf("| %15s ",  matrix[i][j]);
             }
