@@ -132,6 +132,7 @@ public class Table {
 
         return "Deu alguma coisa errado";
     }
+
     public ArrayList<Position> getAllPossibilities(int rowPiece, int columnPiece) {
         ArrayList<Position> arrayPositions = new ArrayList<Position>() ;
 
