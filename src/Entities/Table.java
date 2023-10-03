@@ -1,10 +1,9 @@
 package Entities;
 
-import java.sql.SQLOutput;
 import java.util.*;
 
 public class Table {
-    private static final Piece[][] matrix = new Piece[8][8];
+    public Piece[][] matrix = new Piece[8][8];
 
 
     public Table() {
