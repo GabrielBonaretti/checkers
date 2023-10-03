@@ -66,15 +66,14 @@ public class Table {
             return "Não é sua vez!";
         }
 
-        Position positionTryed = positionTryedParam;
-        int newRow = positionTryed.getRow();
-        int newColumn = positionTryed.getColumn();
+        int newRow = positionTryedParam.getRow();
+        int newColumn = positionTryedParam.getColumn();
 
         Piece piece;
 
         if (arrayPositions.get(0).getRow() == newRow && arrayPositions.get(0).getColumn() == newColumn) {
             piece = this.getPiece(rowPiece-1, columnPiece-1);
-            choosedPiece.setPosition(positionTryed);
+            choosedPiece.setPosition(positionTryedParam);
             if (piece != null) {
                 String teamDied = piece.team;
                 matrix[rowPiece-1][columnPiece-1] = null;
@@ -87,7 +86,7 @@ public class Table {
             return "Não comeu";
         } else if (arrayPositions.get(1).getRow() == newRow && arrayPositions.get(1).getColumn() == newColumn) {
             piece = this.getPiece(rowPiece-1, columnPiece+1);
-            choosedPiece.setPosition(positionTryed);
+            choosedPiece.setPosition(positionTryedParam);
             if (piece != null) {
                 String teamDied = piece.team;
                 matrix[rowPiece-1][columnPiece+1] = null;
@@ -101,7 +100,7 @@ public class Table {
             return "Não comeu";
         } else if (arrayPositions.get(2).getRow() == newRow && arrayPositions.get(2).getColumn() == newColumn) {
             piece = this.getPiece(rowPiece+1, columnPiece-1);
-            choosedPiece.setPosition(positionTryed);
+            choosedPiece.setPosition(positionTryedParam);
             if (piece != null) {
                 String teamDied = piece.team;
                 matrix[rowPiece+1][columnPiece-1] = null;
@@ -115,7 +114,7 @@ public class Table {
             return "Não comeu";
         } else if (arrayPositions.get(3).getRow() == newRow && arrayPositions.get(3).getColumn() == newColumn) {
             piece = this.getPiece(rowPiece+1, columnPiece+1);
-            choosedPiece.setPosition(positionTryed);
+            choosedPiece.setPosition(positionTryedParam);
             if (piece != null) {
                 String teamDied = piece.team;
                 matrix[rowPiece+1][columnPiece+1] = null;
@@ -136,29 +135,33 @@ public class Table {
     public ArrayList<Position> getAllPossibilities(int rowPiece, int columnPiece) {
         ArrayList<Position> arrayPositions = new ArrayList<Position>() ;
 
-        Position position1 = new Position();
-        Position position2 = new Position();
-        Position position3 = new Position();
-        Position position4 = new Position();
+        Position position1;
+        Position position2;
+        Position position3;
+        Position position4;
 
         for (int i = 0; i < 4; i++) {
             switch (i) {
-                case 0:
+                case 0: {
                     position1 = this.tryPossibilities(rowPiece, columnPiece, "NEGATIVE", "NEGATIVE");
                     arrayPositions.add(position1);
                     break;
-                case 1:
+                }
+                case 1: {
                     position2 = this.tryPossibilities(rowPiece, columnPiece, "NEGATIVE", "POSITIVE");
                     arrayPositions.add(position2);
                     break;
-                case 2:
+                }
+                case 2: {
                     position3 = this.tryPossibilities(rowPiece, columnPiece, "POSITIVE", "NEGATIVE");
                     arrayPositions.add(position3);
                     break;
-                case 3:
+                }
+                case 3: {
                     position4 = this.tryPossibilities(rowPiece, columnPiece, "POSITIVE", "POSITIVE");
                     arrayPositions.add(position4);
                     break;
+                }
             }
         }
 

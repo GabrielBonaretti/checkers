@@ -14,17 +14,23 @@ public class Game {
 
     public void gameGoing() {
         Scanner sc = new Scanner(System.in);
-        String response;
-        ArrayList<Position> arrayListPosition;
         Table board = new Table();
-        System.out.println(board);
-        int row = 0;
+
+        ArrayList<Position> arrayListPosition;
+        String response;
+
         int column = 0;
+        boolean eatAgain = false;
+        int row = 0;
+
+
+        System.out.println(board);
 
         while (numberBlackPieces > 0 || numberWhitePieces > 0) {
-            boolean eatAgain = false;
-            System.out.println("É a vez das peças " + turn);
-            System.out.println(currentPiece);
+            eatAgain = false;
+
+            System.out.println("Turn: " + turn);
+
             if (currentPiece == null) {
                 System.out.println("Digite a linha da peça: ");
                 row = sc.nextInt();
@@ -34,14 +40,11 @@ public class Game {
 
                 arrayListPosition = board.getAllPossibilities(row, column);
             } else {
-                System.out.println(currentPiece);
                 row = currentPiece.position.getRow();
                 column = currentPiece.position.getColumn();
 
                 arrayListPosition = board.getAllPossibilities(row, column);
             }
-
-
 
             System.out.println(arrayListPosition);
 
@@ -57,47 +60,47 @@ public class Game {
             board.alocatingBoard();
 
             arrayListPosition = board.getAllPossibilities(newRow, newColumn);
-
-
-            System.out.println(arrayListPosition);
             for (Position positionOption : arrayListPosition) {
                 if (Math.abs(positionOption.getRow()-newRow) == 2 && Math.abs(positionOption.getColumn()-newColumn) == 2) {
                     eatAgain = true;
                 }
             }
 
+            verifyEndTurn(eatAgain, response, newRow, newColumn, board);
 
-            System.out.println(response);
-            if (Objects.equals(response, "Não é sua vez!")) {
-                System.out.println(response);
-            } else if (Objects.equals(response, "white") && !eatAgain) {
-                this.numberWhitePieces -= 1;
-                this.turn = "white";
-                this.currentPiece = null;
-            } else if (Objects.equals(response, "black") && !eatAgain) {
-                this.numberBlackPieces -= 1;
-                this.turn = "black";
-                this.currentPiece = null;
-            } else if (Objects.equals(response, "Não comeu")) {
-                if (Objects.equals(this.turn, "white")) {
-                    this.turn = "black";
-                } else {
-                    this.turn = "white";
-                }
-                this.currentPiece = null;
-            } else if (Objects.equals(response, "white") && eatAgain || Objects.equals(response, "black") && eatAgain) {
-                this.currentPiece = board.getPiece(newRow, newColumn);
 
-                if (Objects.equals(currentPiece.team, "white")) {
-                    this.numberBlackPieces -= 1;
-                } else {
-                    this.numberWhitePieces -= 1;
-                }
-            }
-
-            System.out.println(numberBlackPieces);
-            System.out.println(numberWhitePieces);
             System.out.println(board);
+        }
+
+        sc.close();
+    }
+
+    public void verifyEndTurn(boolean eatAgain, String response, int newRow, int newColumn, Table board) {
+        if (Objects.equals(response, "Não é sua vez!")) {
+            System.out.println(response);
+        } else if (Objects.equals(response, "white") && !eatAgain) {
+            this.numberWhitePieces -= 1;
+            this.turn = "white";
+            this.currentPiece = null;
+        } else if (Objects.equals(response, "black") && !eatAgain) {
+            this.numberBlackPieces -= 1;
+            this.turn = "black";
+            this.currentPiece = null;
+        } else if (Objects.equals(response, "Não comeu")) {
+            if (Objects.equals(this.turn, "white")) {
+                this.turn = "black";
+            } else {
+                this.turn = "white";
+            }
+            this.currentPiece = null;
+        } else if (Objects.equals(response, "white") && eatAgain || Objects.equals(response, "black") && eatAgain) {
+            this.currentPiece = board.getPiece(newRow, newColumn);
+
+            if (Objects.equals(currentPiece.team, "white")) {
+                this.numberBlackPieces -= 1;
+            } else {
+                this.numberWhitePieces -= 1;
+            }
         }
     }
 }
