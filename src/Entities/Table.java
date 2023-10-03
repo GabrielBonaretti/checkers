@@ -70,8 +70,10 @@ public class Table {
         int newRow = positionTryed.getRow();
         int newColumn = positionTryed.getColumn();
 
+        Piece piece;
+
         if (arrayPositions.get(0).getRow() == newRow && arrayPositions.get(0).getColumn() == newColumn) {
-            Piece piece = this.getPiece(rowPiece-1, columnPiece-1);
+            piece = this.getPiece(rowPiece-1, columnPiece-1);
             choosedPiece.setPosition(positionTryed);
             if (piece != null) {
                 String teamDied = piece.team;
@@ -84,7 +86,7 @@ public class Table {
             }
             return "Não comeu";
         } else if (arrayPositions.get(1).getRow() == newRow && arrayPositions.get(1).getColumn() == newColumn) {
-            Piece piece = this.getPiece(rowPiece-1, columnPiece+1);
+            piece = this.getPiece(rowPiece-1, columnPiece+1);
             choosedPiece.setPosition(positionTryed);
             if (piece != null) {
                 String teamDied = piece.team;
@@ -98,7 +100,7 @@ public class Table {
 
             return "Não comeu";
         } else if (arrayPositions.get(2).getRow() == newRow && arrayPositions.get(2).getColumn() == newColumn) {
-            Piece piece = this.getPiece(rowPiece+1, columnPiece-1);
+            piece = this.getPiece(rowPiece+1, columnPiece-1);
             choosedPiece.setPosition(positionTryed);
             if (piece != null) {
                 String teamDied = piece.team;
@@ -112,7 +114,7 @@ public class Table {
 
             return "Não comeu";
         } else if (arrayPositions.get(3).getRow() == newRow && arrayPositions.get(3).getColumn() == newColumn) {
-            Piece piece = this.getPiece(rowPiece+1, columnPiece+1);
+            piece = this.getPiece(rowPiece+1, columnPiece+1);
             choosedPiece.setPosition(positionTryed);
             if (piece != null) {
                 String teamDied = piece.team;
@@ -134,7 +136,6 @@ public class Table {
     public ArrayList<Position> getAllPossibilities(int rowPiece, int columnPiece) {
         ArrayList<Position> arrayPositions = new ArrayList<Position>() ;
 
-        Piece choosedPiece = this.getPiece(rowPiece, columnPiece);
         Position position1 = new Position();
         Position position2 = new Position();
         Position position3 = new Position();
@@ -172,7 +173,7 @@ public class Table {
         int columnPlay;
         int columnEat;
 
-        if (operationRow == "NEGATIVE") {
+        if (Objects.equals(operationRow, "NEGATIVE")) {
             rowPlay = rowPiece-1;
             rowEat = rowPiece-2;
         } else {
@@ -180,7 +181,7 @@ public class Table {
             rowEat = rowPiece+2;
         }
 
-        if (operationColumn == "NEGATIVE") {
+        if (Objects.equals(operationColumn, "NEGATIVE")) {
             columnPlay = columnPiece-1;
             columnEat = columnPiece-2;
         } else {
