@@ -1,4 +1,8 @@
-package Entities;
+package ScreenEntities;
+
+import Entities.Piece;
+import Entities.Position;
+import Entities.Table;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -6,71 +10,60 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Screen {
-    private JFrame frame;
-    private JPanel gridPanel;
-    private Piece[][] boardMatrix;
-    ArrayList<Position> optionList = new ArrayList<>();
-    Table board = new Table();
-    int rowPiece;
-    int columnPiece;
-    ImageIcon pawnWhiteImage;
-    ImageIcon pawnBlackImage;
+public class Board extends JPanel {
+    private ArrayList<Position> optionList = new ArrayList<>();
+    private final Table board = new Table();
+    private String turn = "black";
     private int numberWhitePieces = 12;
     private int numberBlackPieces = 12;
-    public String turn = "black";
-    public Piece currentPiece = null;
+    private int columnPiece;
+    private int rowPiece;
 
-    public Screen() {
-        frame = new JFrame("DAMA DO BONA!!!");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 400);
-
-        gridPanel = new JPanel(new GridLayout(8, 8));
-
-        Table board = new Table();
-        boardMatrix = board.matrix; // Initialize your board matrix here
-
-        createBoard();
-
-        frame.add(gridPanel);
-        frame.setVisible(true);
+    public int getNumberWhitePieces() {
+        return numberWhitePieces;
     }
 
-    private void createBoard() {
-        gridPanel.removeAll(); // Clear the existing board
+    public void setNumberWhitePieces(int numberWhitePieces) {
+        this.numberWhitePieces = numberWhitePieces;
+    }
+
+    public int getNumberBlackPieces() {
+        return numberBlackPieces;
+    }
+
+    public void setNumberBlackPieces(int numberBlackPieces) {
+        this.numberBlackPieces = numberBlackPieces;
+    }
+
+    public Board() {
+        super(new GridLayout(8, 8));
+        this.setBounds(-3, 49, 390, 363);
+
+    }
+
+    public void createBoard(JFrame frame, Status statusPanel) {
+        this.removeAll(); // Clear the existing board
         board.alocatingBoard();
-
-        boardMatrix = board.matrix;
-
-        pawnWhiteImage = new ImageIcon("src/images/pawnWhite.png");
-        pawnWhiteImage.setImage(pawnWhiteImage.getImage().getScaledInstance(45,45, Image.SCALE_DEFAULT));
-
-        pawnBlackImage = new ImageIcon("src/images/pawnBlack.png");
-        pawnBlackImage.setImage(pawnBlackImage.getImage().getScaledInstance(45,45, Image.SCALE_DEFAULT));
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Position position = new Position(i, j);
-                Button cell = new Button(position);
-                cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                ScreenEntities.Button buttonCell = new ScreenEntities.Button(position);
+                buttonCell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-                if (boardMatrix[i][j] != null) {
-                    if (Objects.equals(boardMatrix[i][j].team, "black")) { // You can customize this condition based on your board state
-                        cell.setIcon(pawnBlackImage);
-                        cell.setPiece(boardMatrix[i][j]);
+                if (board.matrix[i][j] != null) {
+                    if (Objects.equals(board.matrix[i][j].team, "black")) {
+                        buttonCell.setPiece(board.matrix[i][j]);
                     } else {
-                        cell.setIcon(pawnWhiteImage);
-                        cell.setPiece(boardMatrix[i][j]);
+                        buttonCell.setPiece(board.matrix[i][j]);
                     }
                 }
-                if (currentPiece != null) {
-                    selectPossibilities(currentPiece.position.getRow(), currentPiece.position.getColumn());
-                } else {
-                    cell.addActionListener(e -> selectPossibilities(cell.position.getRow(), cell.position.getColumn()));
-                }
 
-                gridPanel.add(cell);
+                buttonCell.setImagesButton();
+
+                buttonCell.addActionListener(e -> this.selectPossibilities(buttonCell.position.getRow(), buttonCell.position.getColumn(), frame, statusPanel));
+
+                this.add(buttonCell);
             }
         }
 
@@ -78,16 +71,16 @@ public class Screen {
         frame.repaint();    // Repaint the frame to reflect changes
     }
 
-    public Button getButtonByXAndY(int x, int y) {
+    public ScreenEntities.Button getButtonByXAndY(int x, int y) {
         try {
-            return (Button) this.gridPanel.getComponent(x * 8 + y);
+            return (ScreenEntities.Button) this.getComponent(x * 8 + y);
         } catch(Exception e) {
             return null;
         }
     }
 
-    public void selectPossibilities(int row, int column) {
-        Button buttonClicked = getButtonByXAndY(row, column);
+    public void selectPossibilities(int row, int column, JFrame frame, Status statusPanel) {
+        ScreenEntities.Button buttonClicked = getButtonByXAndY(row, column);
 
         if (buttonClicked.piece != null) {
             clearPossibilities();
@@ -95,7 +88,7 @@ public class Screen {
             this.optionList = board.getAllPossibilities(row, column);
 
             for (Position option : optionList) {
-                Button optionButton = getButtonByXAndY(option.getRow(), option.getColumn());
+                ScreenEntities.Button optionButton = getButtonByXAndY(option.getRow(), option.getColumn());
                 if (optionButton != null) {
                     optionButton.setBorder(new LineBorder(Color.YELLOW));
                     optionButton.setPossiblePlay(true);
@@ -110,7 +103,7 @@ public class Screen {
             String response = board.userPlay(this.turn, this.optionList, positionTryed, this.rowPiece, this.columnPiece);
 
             clearPossibilities();
-            updateBoardMatrix();
+            updateBoardMatrix(frame, statusPanel);
 
             ArrayList<Position> arrayListPosition = board.getAllPossibilities(row, column);
             for (Position positionOption : arrayListPosition) {
@@ -119,54 +112,54 @@ public class Screen {
                 }
             }
 
-            System.out.println(eatAgain);
 
 
-            System.out.println(response);
             if (Objects.equals(response, "Não é sua vez!")) {
                 System.out.println(response);
             } else if (Objects.equals(response, "white") && !eatAgain) {
                 this.numberWhitePieces -= 1;
                 this.turn = "white";
-                this.currentPiece = null;
             } else if (Objects.equals(response, "black") && !eatAgain) {
                 this.numberBlackPieces -= 1;
                 this.turn = "black";
-                this.currentPiece = null;
             } else if (Objects.equals(response, "Não comeu")) {
                 if (Objects.equals(this.turn, "white")) {
                     this.turn = "black";
                 } else {
                     this.turn = "white";
                 }
-                this.currentPiece = null;
             } else if (Objects.equals(response, "white") && eatAgain || Objects.equals(response, "black") && eatAgain) {
-                Piece teste = board.getPiece(row, column);
+                Piece piece = board.getPiece(row, column);
 
-                if (Objects.equals(teste.team, "white")) {
+                if (Objects.equals(piece.team, "white")) {
                     this.numberBlackPieces -= 1;
                 } else {
                     this.numberWhitePieces -= 1;
                 }
             }
-        } else {
-            System.out.println("Clicou no nada irmão?");
         }
+
+        statusPanel.setText("Turn: " + this.turn + " | " + "Black pieces: " + this.numberBlackPieces + " - White pieces: " + this.numberWhitePieces );
     }
 
     // Method to update the board matrix
-    public void updateBoardMatrix() {
+    public void updateBoardMatrix(JFrame frame, Status statusPanel) {
+        this.verifyEnd();
         board.alocatingBoard();
-        createBoard(); // Refresh the board layout
+        this.createBoard(frame, statusPanel); // Refresh the board layout
     }
 
     public void clearPossibilities() {
         for (int i = 0; i < 64; i++) {
-            Button button = (Button) this.gridPanel.getComponent(i);
+            ScreenEntities.Button button = (Button) this.getComponent(i);
             button.setBorder(new LineBorder(Color.BLACK));
             button.setPossiblePlay(false);
         }
     }
 
+    public void verifyEnd() {
+        if ( numberWhitePieces == 0 || numberBlackPieces == 0 ) {
+            board.creatingPieces();
+        }
+    }
 }
-

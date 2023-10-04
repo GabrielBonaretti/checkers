@@ -1,5 +1,7 @@
-package Entities;
+package Aplication;
 
+
+import ScreenEntities.Screen;
 
 public class Main {
     public static void main(String[] args) {
