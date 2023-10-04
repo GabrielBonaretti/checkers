@@ -32,6 +32,8 @@ public class Table {
                     }
 
                     count += 1;
+                } else {
+                    matrix[i][j] = null;
                 }
             }
         }
@@ -68,68 +70,50 @@ public class Table {
         int newRow = positionTryedParam.getRow();
         int newColumn = positionTryedParam.getColumn();
 
-        Piece piece;
 
         if (arrayPositions.get(0).getRow() == newRow && arrayPositions.get(0).getColumn() == newColumn) {
-            piece = this.getPiece(rowPiece-1, columnPiece-1);
-            choosedPiece.setPosition(positionTryedParam);
-            if (piece != null) {
-                String teamDied = piece.team;
-                matrix[rowPiece-1][columnPiece-1] = null;
-                if (Objects.equals(teamDied, "white")) {
-                    return "white";
-                } else {
-                    return "black";
-                }
-            }
-            return "Não comeu";
+            return tryPlay(choosedPiece, positionTryedParam,"NEGATIVE", "NEGATIVE", rowPiece, columnPiece);
         } else if (arrayPositions.get(1).getRow() == newRow && arrayPositions.get(1).getColumn() == newColumn) {
-            piece = this.getPiece(rowPiece-1, columnPiece+1);
-            choosedPiece.setPosition(positionTryedParam);
-            if (piece != null) {
-                String teamDied = piece.team;
-                matrix[rowPiece-1][columnPiece+1] = null;
-                if (Objects.equals(teamDied, "white")) {
-                    return "white";
-                } else {
-                    return "black";
-                }
-            }
-
-            return "Não comeu";
+            return tryPlay(choosedPiece, positionTryedParam,"NEGATIVE", "POSITIVE", rowPiece, columnPiece);
         } else if (arrayPositions.get(2).getRow() == newRow && arrayPositions.get(2).getColumn() == newColumn) {
-            piece = this.getPiece(rowPiece+1, columnPiece-1);
-            choosedPiece.setPosition(positionTryedParam);
-            if (piece != null) {
-                String teamDied = piece.team;
-                matrix[rowPiece+1][columnPiece-1] = null;
-                if (Objects.equals(teamDied, "white")) {
-                    return "white";
-                } else {
-                    return "black";
-                }
-            }
-
-            return "Não comeu";
+            return tryPlay(choosedPiece, positionTryedParam,"POSITIVE", "NEGATIVE", rowPiece, columnPiece);
         } else if (arrayPositions.get(3).getRow() == newRow && arrayPositions.get(3).getColumn() == newColumn) {
-            piece = this.getPiece(rowPiece+1, columnPiece+1);
-            choosedPiece.setPosition(positionTryedParam);
-            if (piece != null) {
-                String teamDied = piece.team;
-                matrix[rowPiece+1][columnPiece+1] = null;
-                if (Objects.equals(teamDied, "white")) {
-                    return "white";
-                } else {
-                    return "black";
-                }
-            }
-
-            return "Não comeu";
+            return tryPlay(choosedPiece, positionTryedParam,"POSITIVE", "POSITIVE", rowPiece, columnPiece);
         } else {
             System.out.println("Escolha uma opção válida");
         }
 
         return "Deu alguma coisa errado";
+    }
+
+    public String tryPlay(Piece choosedPiece, Position positionTryedParam, String operationRow, String operationColumn, int rowPiece, int columnPiece) {
+        int rowPlay;
+        int columnPlay;
+
+        if (Objects.equals(operationRow, "NEGATIVE")) {
+            rowPlay = rowPiece-1;
+        } else {
+            rowPlay = rowPiece+1;
+        }
+
+        if (Objects.equals(operationColumn, "NEGATIVE")) {
+            columnPlay = columnPiece-1;
+        } else {
+            columnPlay = columnPiece+1;
+        }
+
+        Piece piece = this.getPiece(rowPlay, columnPlay);
+        choosedPiece.setPosition(positionTryedParam);
+        if (piece != null) {
+            String teamDied = piece.team;
+            matrix[rowPlay][columnPlay] = null;
+            if (Objects.equals(teamDied, "white")) {
+                return "white";
+            } else {
+                return "black";
+            }
+        }
+        return "Não comeu";
     }
 
     public ArrayList<Position> getAllPossibilities(int rowPiece, int columnPiece) {
@@ -140,30 +124,17 @@ public class Table {
         Position position3;
         Position position4;
 
-        for (int i = 0; i < 4; i++) {
-            switch (i) {
-                case 0: {
-                    position1 = this.tryPossibilities(rowPiece, columnPiece, "NEGATIVE", "NEGATIVE");
-                    arrayPositions.add(position1);
-                    break;
-                }
-                case 1: {
-                    position2 = this.tryPossibilities(rowPiece, columnPiece, "NEGATIVE", "POSITIVE");
-                    arrayPositions.add(position2);
-                    break;
-                }
-                case 2: {
-                    position3 = this.tryPossibilities(rowPiece, columnPiece, "POSITIVE", "NEGATIVE");
-                    arrayPositions.add(position3);
-                    break;
-                }
-                case 3: {
-                    position4 = this.tryPossibilities(rowPiece, columnPiece, "POSITIVE", "POSITIVE");
-                    arrayPositions.add(position4);
-                    break;
-                }
-            }
-        }
+        position1 = this.tryPossibilities(rowPiece, columnPiece, "NEGATIVE", "NEGATIVE");
+        arrayPositions.add(position1);
+
+        position2 = this.tryPossibilities(rowPiece, columnPiece, "NEGATIVE", "POSITIVE");
+        arrayPositions.add(position2);
+
+        position3 = this.tryPossibilities(rowPiece, columnPiece, "POSITIVE", "NEGATIVE");
+        arrayPositions.add(position3);
+
+        position4 = this.tryPossibilities(rowPiece, columnPiece, "POSITIVE", "POSITIVE");
+        arrayPositions.add(position4);
 
         return arrayPositions;
     }
@@ -211,23 +182,5 @@ public class Table {
         } catch (Exception ignored) {}
 
         return position;
-    }
-
-    @Override
-    public String toString() {
-        for (int n = 0; n < 8; n++) {
-            System.out.printf("| %15d ",  n);
-        }
-        System.out.println();
-
-        for (int i = 0; i < 8; i++) {
-            System.out.print(i);
-
-            for (int j = 0; j < 8; j++) {
-                System.out.printf("| %15s ",  matrix[i][j]);
-            }
-            System.out.println();
-        }
-        return "" ;
     }
 }

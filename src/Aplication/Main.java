@@ -1,7 +1,7 @@
 package Aplication;
 
 
-import ScreenEntities.Screen;
+import UI.Screen;
 
 public class Main {
     public static void main(String[] args) {

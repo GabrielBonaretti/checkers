@@ -1,4 +1,4 @@
-package ScreenEntities;
+package UI;
 
 import Entities.Piece;
 import Entities.Position;
@@ -19,16 +19,8 @@ public class Board extends JPanel {
     private int columnPiece;
     private int rowPiece;
 
-    public int getNumberWhitePieces() {
-        return numberWhitePieces;
-    }
-
     public void setNumberWhitePieces(int numberWhitePieces) {
         this.numberWhitePieces = numberWhitePieces;
-    }
-
-    public int getNumberBlackPieces() {
-        return numberBlackPieces;
     }
 
     public void setNumberBlackPieces(int numberBlackPieces) {
@@ -37,7 +29,7 @@ public class Board extends JPanel {
 
     public Board() {
         super(new GridLayout(8, 8));
-        this.setBounds(-3, 49, 390, 363);
+        this.setBounds(-3, 29, 590, 563);
 
     }
 
@@ -48,7 +40,7 @@ public class Board extends JPanel {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Position position = new Position(i, j);
-                ScreenEntities.Button buttonCell = new ScreenEntities.Button(position);
+                UI.Button buttonCell = new UI.Button(position);
                 buttonCell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
                 if (board.matrix[i][j] != null) {
@@ -71,16 +63,16 @@ public class Board extends JPanel {
         frame.repaint();    // Repaint the frame to reflect changes
     }
 
-    public ScreenEntities.Button getButtonByXAndY(int x, int y) {
+    public UI.Button getButtonByXAndY(int x, int y) {
         try {
-            return (ScreenEntities.Button) this.getComponent(x * 8 + y);
+            return (UI.Button) this.getComponent(x * 8 + y);
         } catch(Exception e) {
             return null;
         }
     }
 
     public void selectPossibilities(int row, int column, JFrame frame, Status statusPanel) {
-        ScreenEntities.Button buttonClicked = getButtonByXAndY(row, column);
+        UI.Button buttonClicked = getButtonByXAndY(row, column);
 
         if (buttonClicked.piece != null) {
             clearPossibilities();
@@ -88,7 +80,7 @@ public class Board extends JPanel {
             this.optionList = board.getAllPossibilities(row, column);
 
             for (Position option : optionList) {
-                ScreenEntities.Button optionButton = getButtonByXAndY(option.getRow(), option.getColumn());
+                UI.Button optionButton = getButtonByXAndY(option.getRow(), option.getColumn());
                 if (optionButton != null) {
                     optionButton.setBorder(new LineBorder(Color.YELLOW));
                     optionButton.setPossiblePlay(true);
@@ -144,22 +136,24 @@ public class Board extends JPanel {
 
     // Method to update the board matrix
     public void updateBoardMatrix(JFrame frame, Status statusPanel) {
-        this.verifyEnd();
         board.alocatingBoard();
         this.createBoard(frame, statusPanel); // Refresh the board layout
     }
 
     public void clearPossibilities() {
         for (int i = 0; i < 64; i++) {
-            ScreenEntities.Button button = (Button) this.getComponent(i);
+            UI.Button button = (Button) this.getComponent(i);
             button.setBorder(new LineBorder(Color.BLACK));
             button.setPossiblePlay(false);
         }
     }
 
-    public void verifyEnd() {
-        if ( numberWhitePieces == 0 || numberBlackPieces == 0 ) {
-            board.creatingPieces();
-        }
+    public void resetBoard(JFrame frame, Status statusPanel) {
+        board.creatingPieces();
+        this.createBoard(frame, statusPanel);
+        this.turn = "black";
+        this.setNumberBlackPieces(12);
+        this.setNumberWhitePieces(12);
+        statusPanel.setText("Turn: " + this.turn + " | " + "Black pieces: " + this.numberBlackPieces + " - White pieces: " + this.numberWhitePieces );
     }
 }

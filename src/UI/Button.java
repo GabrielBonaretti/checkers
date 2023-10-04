@@ -1,4 +1,4 @@
-package ScreenEntities;
+package UI;
 
 import Entities.Piece;
 import Entities.Position;
@@ -15,6 +15,7 @@ public class Button extends JButton {
     public Button(Position position) {
         super();
         this.position = position;
+        this.setFocusable(false);
         colorButton();
     }
 
