@@ -1,8 +1,10 @@
 package UI;
 
+import Entities.Pawn;
 import Entities.Piece;
 import Entities.Position;
 import Entities.Table;
+import Entities.Lady;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -18,6 +20,7 @@ public class Board extends JPanel {
     private int numberBlackPieces = 12;
     private int columnPiece;
     private int rowPiece;
+
 
     public void setNumberWhitePieces(int numberWhitePieces) {
         this.numberWhitePieces = numberWhitePieces;
@@ -73,12 +76,11 @@ public class Board extends JPanel {
 
     public void selectPossibilities(int row, int column, JFrame frame, Status statusPanel) {
         UI.Button buttonClicked = getButtonByXAndY(row, column);
+        Lady pieceTest = (Lady) board.getPiece(row, column);
 
-        if (buttonClicked.piece != null) {
+        if (pieceTest != null) {
             clearPossibilities();
-
-            this.optionList = board.getAllPossibilities(row, column);
-
+            this.optionList = pieceTest.getAllPossibilities(board);
             for (Position option : optionList) {
                 UI.Button optionButton = getButtonByXAndY(option.getRow(), option.getColumn());
                 if (optionButton != null) {
@@ -92,19 +94,18 @@ public class Board extends JPanel {
         } else if (buttonClicked.isPossiblePlay()) {
             boolean eatAgain = false;
             Position positionTryed = new Position(row, column);
-            String response = board.userPlay(this.turn, this.optionList, positionTryed, this.rowPiece, this.columnPiece);
+            pieceTest = (Lady) board.getPiece(rowPiece, columnPiece);
+            String response = pieceTest.userPlay(this.turn, this.optionList, positionTryed, board);
 
             clearPossibilities();
             updateBoardMatrix(frame, statusPanel);
 
-            ArrayList<Position> arrayListPosition = board.getAllPossibilities(row, column);
+            ArrayList<Position> arrayListPosition = pieceTest.getAllPossibilities(board);
             for (Position positionOption : arrayListPosition) {
                 if (Math.abs(positionOption.getRow()-row) == 2 && Math.abs(positionOption.getColumn()-column) == 2) {
                     eatAgain = true;
                 }
             }
-
-
 
             if (Objects.equals(response, "Não é sua vez!")) {
                 System.out.println(response);

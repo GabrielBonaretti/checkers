@@ -1,8 +1,5 @@
 package Entities;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 public class Piece {
     public String name;
     public Position position;
@@ -10,6 +7,14 @@ public class Piece {
 
     public void setPosition(Position position) {
         this.position = position;
+    }
+
+    public int getPositionRow() {
+        return position.getRow();
+    }
+
+    public int getPositionColumn() {
+        return position.getColumn();
     }
 
     public Piece(String name, Position position, String team) {
