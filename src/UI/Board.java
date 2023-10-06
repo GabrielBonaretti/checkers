@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Board extends JPanel {
@@ -96,7 +97,9 @@ public class Board extends JPanel {
             Position positionTryed = new Position(row, column);
             pieceTest = (Lady) board.getPiece(rowPiece, columnPiece);
             String response = pieceTest.userPlay(this.turn, this.optionList, positionTryed, board);
-
+            System.out.println(Arrays.toString(response.split(" ")));
+            String[] teste = new String[]{Arrays.toString(response.split(" "))};
+            System.out.println(teste[0].equals("Não é sua vez!"));
             clearPossibilities();
             updateBoardMatrix(frame, statusPanel);
 
@@ -107,7 +110,7 @@ public class Board extends JPanel {
                 }
             }
 
-            if (Objects.equals(response, "Não é sua vez!")) {
+            if (teste[0].equals("NãoéSuaVez!")) {
                 System.out.println(response);
             } else if (Objects.equals(response, "white") && !eatAgain) {
                 this.numberWhitePieces -= 1;

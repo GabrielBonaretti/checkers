@@ -1,6 +1,10 @@
 package Entities;
 
+import Aplication.Main;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Lady extends Piece{
@@ -35,6 +39,7 @@ public class Lady extends Piece{
 
     public ArrayList<Position> tryPossibilities(String operationRow, String operationColumn, Table board) {
         ArrayList<Position> diagonalPossibilities = new ArrayList<Position>();
+        int countSequencePieces = 0;
         int rowPlay;
         int rowEat;
         int columnPlay;
@@ -63,10 +68,16 @@ public class Lady extends Piece{
                 Piece piece = board.getPiece(rowPlay, columnPlay);
 
                 if (piece != null && !Objects.equals(piece.team, this.team)) {
+                    countSequencePieces++;
+                    if (countSequencePieces > 1) {
+                        break;
+                    }
+
                     try {
                         Piece piece2 = board.getPiece(rowEat, columnEat);
 
                         if (piece2 == null) {
+                            countSequencePieces--;
                             position.setRow(rowEat);
                             position.setColumn(columnEat);
                             diagonalPossibilities.add(position);
@@ -74,6 +85,8 @@ public class Lady extends Piece{
                     } catch (Exception ignored) {
                         break;
                     }
+                } else if (piece != null && Objects.equals(piece.team, this.team)) {
+                    break;
                 } else if (piece == null) {
                     position.setRow(rowPlay);
                     position.setColumn(columnPlay);
@@ -91,58 +104,96 @@ public class Lady extends Piece{
     }
 
     public String userPlay(String turn, ArrayList<Position> arrayPositions, Position positionTryedParam, Table board) {
+        String response;
+        int countPiecesEat = 0;
+
         if (!Objects.equals(this.team, turn)) {
-            return "Não é sua vez!";
+            return "NãoéSuaVez! " + countPiecesEat;
         }
 
-        int newRow = positionTryedParam.getRow();
-        int newColumn = positionTryedParam.getColumn();
+        int difRow = this.getPositionRow()-positionTryedParam.getRow();
+        int difColumn = this.getPositionColumn()-positionTryedParam.getColumn();
 
 
-        if (arrayPositions.get(0).getRow() == newRow && arrayPositions.get(0).getColumn() == newColumn) {
-            return tryPlay(positionTryedParam,"NEGATIVE", "NEGATIVE", board);
-        } else if (arrayPositions.get(1).getRow() == newRow && arrayPositions.get(1).getColumn() == newColumn) {
-            return tryPlay(positionTryedParam,"NEGATIVE", "POSITIVE", board);
-        } else if (arrayPositions.get(2).getRow() == newRow && arrayPositions.get(2).getColumn() == newColumn) {
-            return tryPlay(positionTryedParam,"POSITIVE", "NEGATIVE", board);
-        } else if (arrayPositions.get(3).getRow() == newRow && arrayPositions.get(3).getColumn() == newColumn) {
-            return tryPlay(positionTryedParam,"POSITIVE", "POSITIVE", board);
-        } else {
-            System.out.println("Escolha uma opção válida");
-        }
+        if (difRow < 0 && difColumn < 0) {
+            for (int i = 1; i <= Math.abs(difRow); i++) {
+                Piece piece = board.getPiece(this.getPositionRow() + i, this.getPositionColumn() + i);
+                if (piece != null) {
+                    board.matrix[this.getPositionRow() + i][this.getPositionColumn() + i] = null;
+                    countPiecesEat += 1;
+                }
+            }
+        } else if (difRow > 0 && difColumn < 0) {
+            for (int i = 1; i <= Math.abs(difRow); i++) {
+                Piece piece = board.getPiece(this.getPositionRow() - i, this.getPositionColumn() + i);
+                if (piece != null) {
+                    board.matrix[this.getPositionRow() - i][this.getPositionColumn() + i] = null;
+                    countPiecesEat += 1;
+                }
+            }
+        } else if (difRow < 0 && difColumn > 0) {
+            for (int i = 1; i <= Math.abs(difRow); i++) {
+                Piece piece = board.getPiece(this.getPositionRow() + i, this.getPositionColumn() - i);
+                if (piece != null) {
+                    board.matrix[this.getPositionRow() + i][this.getPositionColumn() - i] = null;
+                    countPiecesEat += 1;
+                }
+            }
+        } else if (difRow > 0 && difColumn > 0) {
+            for (int i = 1; i <= Math.abs(difRow); i++) {
+                Piece piece = board.getPiece(this.getPositionRow() - i, this.getPositionColumn() - i);
+                if (piece != null) {
+                    board.matrix[this.getPositionRow() - i][this.getPositionColumn() - i] = null;
+                    countPiecesEat += 1;
 
-        return "Deu alguma coisa errado";
-    }
-
-    public String tryPlay(Position positionTryedParam, String operationRow, String operationColumn, Table board) {
-        int rowPlay;
-        int columnPlay;
-
-        if (Objects.equals(operationRow, "NEGATIVE")) {
-            rowPlay = this.getPositionRow()-1;
-        } else {
-            rowPlay = this.getPositionRow()+1;
-        }
-
-        if (Objects.equals(operationColumn, "NEGATIVE")) {
-            columnPlay = this.getPositionColumn()-1;
-        } else {
-            columnPlay = this.getPositionColumn()+1;
-        }
-
-        Piece piece = board.getPiece(rowPlay, columnPlay);
-        this.setPosition(positionTryedParam);
-        if (piece != null) {
-            String teamDied = piece.team;
-            board.matrix[rowPlay][columnPlay] = null;
-            if (Objects.equals(teamDied, "white")) {
-                return "white";
-            } else {
-                return "black";
+                }
             }
         }
-        return "Não comeu";
+
+        if (Objects.equals(this.team, "white")) {
+            response = "white "+countPiecesEat;
+        } else {
+            response = "balck "+countPiecesEat;
+        }
+
+        for (Position position : arrayPositions) {
+            if (position.getRow() == positionTryedParam.getRow() && position.getColumn() == positionTryedParam.getColumn()) {
+                this.setPosition(positionTryedParam);
+            }
+        }
+
+        return response;
     }
+
+//    public String tryPlay(Position positionTryedParam, String operationRow, String operationColumn, Table board) {
+//        int rowPlay;
+//        int columnPlay;
+//
+//        if (Objects.equals(operationRow, "NEGATIVE")) {
+//            rowPlay = this.getPositionRow()-1;
+//        } else {
+//            rowPlay = this.getPositionRow()+1;
+//        }
+//
+//        if (Objects.equals(operationColumn, "NEGATIVE")) {
+//            columnPlay = this.getPositionColumn()-1;
+//        } else {
+//            columnPlay = this.getPositionColumn()+1;
+//        }
+//
+//        Piece piece = board.getPiece(rowPlay, columnPlay);
+//        this.setPosition(positionTryedParam);
+//        if (piece != null) {
+//            String teamDied = piece.team;
+//            board.matrix[rowPlay][columnPlay] = null;
+//            if (Objects.equals(teamDied, "white")) {
+//                return "white";
+//            } else {
+//                return "black";
+//            }
+//        }
+//        return "Não comeu";
+//    }
 
 
 }
