@@ -1,16 +1,15 @@
 package UI;
 
-import Entities.Pawn;
+import Entities.Lady;
 import Entities.Piece;
 import Entities.Position;
 import Entities.Table;
-import Entities.Lady;
+import Entities.Pawn;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class Board extends JPanel {
@@ -77,7 +76,7 @@ public class Board extends JPanel {
 
     public void selectPossibilities(int row, int column, JFrame frame, Status statusPanel) {
         UI.Button buttonClicked = getButtonByXAndY(row, column);
-        Lady pieceTest = (Lady) board.getPiece(row, column);
+        Pawn pieceTest = (Pawn) board.getPiece(row, column);
 
         if (pieceTest != null) {
             clearPossibilities();
@@ -93,44 +92,39 @@ public class Board extends JPanel {
             this.rowPiece = row;
             this.columnPiece = column;
         } else if (buttonClicked.isPossiblePlay()) {
-            boolean eatAgain = false;
             Position positionTryed = new Position(row, column);
-            pieceTest = (Lady) board.getPiece(rowPiece, columnPiece);
+            pieceTest = (Pawn) board.getPiece(rowPiece, columnPiece);
             String response = pieceTest.userPlay(this.turn, this.optionList, positionTryed, board);
-            System.out.println(Arrays.toString(response.split(" ")));
-            String[] teste = new String[]{Arrays.toString(response.split(" "))};
-            System.out.println(teste[0].equals("Não é sua vez!"));
+            String[] responseArray = response.split(" ");
+            int quantPiecesEat = Integer.parseInt(responseArray[1]);
             clearPossibilities();
             updateBoardMatrix(frame, statusPanel);
 
-            ArrayList<Position> arrayListPosition = pieceTest.getAllPossibilities(board);
-            for (Position positionOption : arrayListPosition) {
-                if (Math.abs(positionOption.getRow()-row) == 2 && Math.abs(positionOption.getColumn()-column) == 2) {
-                    eatAgain = true;
-                }
-            }
 
-            if (teste[0].equals("NãoéSuaVez!")) {
+            ArrayList<Position> arrayListPosition = pieceTest.getAllPossibilities(board);
+            boolean eatAgain = pieceTest.eatAgain(arrayListPosition, row, column);
+
+            if (responseArray[0].equals("NãoéSuaVez!")) {
                 System.out.println(response);
-            } else if (Objects.equals(response, "white") && !eatAgain) {
-                this.numberWhitePieces -= 1;
-                this.turn = "white";
-            } else if (Objects.equals(response, "black") && !eatAgain) {
-                this.numberBlackPieces -= 1;
+            } else if (Objects.equals(responseArray[0], "white") && quantPiecesEat > 0 && !eatAgain) {
+                this.numberBlackPieces -= quantPiecesEat;
                 this.turn = "black";
-            } else if (Objects.equals(response, "Não comeu")) {
+            } else if (Objects.equals(responseArray[0], "black") && quantPiecesEat > 0 && !eatAgain) {
+                this.numberWhitePieces -= quantPiecesEat;
+                this.turn = "white";
+            } else if (quantPiecesEat == 0) {
                 if (Objects.equals(this.turn, "white")) {
                     this.turn = "black";
                 } else {
                     this.turn = "white";
                 }
-            } else if (Objects.equals(response, "white") && eatAgain || Objects.equals(response, "black") && eatAgain) {
+            } else if (Objects.equals(responseArray[0], "white") && eatAgain || Objects.equals(responseArray[0], "black") && eatAgain) {
                 Piece piece = board.getPiece(row, column);
 
                 if (Objects.equals(piece.team, "white")) {
-                    this.numberBlackPieces -= 1;
+                    this.numberBlackPieces -= quantPiecesEat;
                 } else {
-                    this.numberWhitePieces -= 1;
+                    this.numberWhitePieces -= quantPiecesEat;
                 }
             }
         }

@@ -23,7 +23,7 @@ public class Table {
                     if (i > 4) {
                         team = "black";
                     }
-                    Lady piece = new Lady("", position, team);
+                    Pawn piece = new Pawn("", position, team);
 
                     if (i % 2 == 0 && j % 2 == 1 ) {
                         matrix[i][j] = piece;

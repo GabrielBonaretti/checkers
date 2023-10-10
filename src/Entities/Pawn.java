@@ -11,8 +11,11 @@ public class Pawn extends Piece{
     }
 
     public String userPlay(String turn, ArrayList<Position> arrayPositions, Position positionTryedParam, Table board) {
+        String response;
+        int countPiecesEat = 0;
+
         if (!Objects.equals(this.team, turn)) {
-            return "Não é sua vez!";
+            return "NãoéSuaVez! " + countPiecesEat;
         }
 
         int newRow = positionTryedParam.getRow();
@@ -28,10 +31,10 @@ public class Pawn extends Piece{
         } else if (arrayPositions.get(3).getRow() == newRow && arrayPositions.get(3).getColumn() == newColumn) {
             return tryPlay(positionTryedParam,"POSITIVE", "POSITIVE", board);
         } else {
-            System.out.println("Escolha uma opção válida");
+            System.out.println("Escolhaumaopçãoválida");
         }
 
-        return "Deu alguma coisa errado";
+        return "Deualgumacoisaerrado";
     }
 
     public String tryPlay(Position positionTryedParam, String operationRow, String operationColumn, Table board) {
@@ -56,12 +59,12 @@ public class Pawn extends Piece{
             String teamDied = piece.team;
             board.matrix[rowPlay][columnPlay] = null;
             if (Objects.equals(teamDied, "white")) {
-                return "white";
+                return "black "+1;
             } else {
-                return "black";
+                return "white "+1;
             }
         }
-        return "Não comeu";
+        return "NãoComeu "+0;
     }
 
     public ArrayList<Position> getAllPossibilities(Table board) {
@@ -128,5 +131,14 @@ public class Pawn extends Piece{
         } catch (Exception ignored) {}
 
         return position;
+    }
+
+    public boolean eatAgain(ArrayList<Position> arrayListPosition, int row, int column) {
+        for (Position positionOption : arrayListPosition) {
+            if (Math.abs(positionOption.getRow()-row) == 2 && Math.abs(positionOption.getColumn()-column) == 2) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -153,7 +153,7 @@ public class Lady extends Piece{
         if (Objects.equals(this.team, "white")) {
             response = "white "+countPiecesEat;
         } else {
-            response = "balck "+countPiecesEat;
+            response = "black "+countPiecesEat;
         }
 
         for (Position position : arrayPositions) {
@@ -165,35 +165,19 @@ public class Lady extends Piece{
         return response;
     }
 
-//    public String tryPlay(Position positionTryedParam, String operationRow, String operationColumn, Table board) {
-//        int rowPlay;
-//        int columnPlay;
-//
-//        if (Objects.equals(operationRow, "NEGATIVE")) {
-//            rowPlay = this.getPositionRow()-1;
-//        } else {
-//            rowPlay = this.getPositionRow()+1;
-//        }
-//
-//        if (Objects.equals(operationColumn, "NEGATIVE")) {
-//            columnPlay = this.getPositionColumn()-1;
-//        } else {
-//            columnPlay = this.getPositionColumn()+1;
-//        }
-//
-//        Piece piece = board.getPiece(rowPlay, columnPlay);
-//        this.setPosition(positionTryedParam);
-//        if (piece != null) {
-//            String teamDied = piece.team;
-//            board.matrix[rowPlay][columnPlay] = null;
-//            if (Objects.equals(teamDied, "white")) {
-//                return "white";
-//            } else {
-//                return "black";
-//            }
-//        }
-//        return "Não comeu";
-//    }
+    public boolean eatAgain(ArrayList<Position> arrayListPosition, int row, int column) {
+        int rowTest = 10;
+        int columnTest = 10;
+        for (Position positionOption : arrayListPosition) {
+            if (rowTest == positionOption.getRow() && columnTest == positionOption.getColumn()) {
+                return true;
+            } else {
+                rowTest = positionOption.getRow();
+                columnTest = positionOption.getColumn();
+            }
+        }
+        return false;
+    }
 
 
 }
