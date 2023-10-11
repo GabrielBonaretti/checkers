@@ -1,5 +1,7 @@
 package Entities;
 
+import java.util.ArrayList;
+
 public class Piece {
     public String name;
     public Position position;
@@ -27,4 +29,5 @@ public class Piece {
     public String toString() {
         return name + " " + team;
     }
+
 }

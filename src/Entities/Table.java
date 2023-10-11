@@ -74,21 +74,16 @@ public class Table {
         return matrix[row][column];
     }
 
-    @Override
-    public String toString() {
-        for (int n = 0; n < 8; n++) {
-            System.out.printf("| %15d ",  n);
-        }
-        System.out.println();
-
+    public void verifyPromotion() {
         for (int i = 0; i < 8; i++) {
-            System.out.print(i);
-
             for (int j = 0; j < 8; j++) {
-                System.out.printf("| %15s ",  matrix[i][j]);
+                Position position = new Position(i, j);
+                if (i == 0 && matrix[i][j] != null && Objects.equals(matrix[i][j].team, "black")) {
+                    matrix[i][j] = new Lady("", position, "black");
+                } else if (i == 7 && matrix[i][j] != null && Objects.equals(matrix[i][j].team, "white")) {
+                    matrix[i][j] = new Lady("", position, "white");
+                }
             }
-            System.out.println();
         }
-        return super.toString();
     }
 }

@@ -1,13 +1,11 @@
 package Entities;
 
-import Aplication.Main;
+import Interfaces.LadyInterface;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
-public class Lady extends Piece{
+public class Lady extends Piece implements LadyInterface {
 
     public Lady(String name, Position position, String team) {
         super(name, position, team);

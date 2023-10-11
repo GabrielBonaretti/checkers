@@ -5,6 +5,7 @@ import Entities.Piece;
 import Entities.Position;
 import Entities.Table;
 import Entities.Pawn;
+import Interfaces.PieceInterface;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -38,7 +39,6 @@ public class Board extends JPanel {
 
     public void createBoard(JFrame frame, Status statusPanel) {
         this.removeAll(); // Clear the existing board
-        board.alocatingBoard();
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -76,15 +76,26 @@ public class Board extends JPanel {
 
     public void selectPossibilities(int row, int column, JFrame frame, Status statusPanel) {
         UI.Button buttonClicked = getButtonByXAndY(row, column);
-        Pawn pieceTest = (Pawn) board.getPiece(row, column);
+
+
+        PieceInterface pieceTest;
+        try {
+            pieceTest = (Pawn) board.getPiece(row, column);
+        } catch (Exception e) {
+            pieceTest = (Lady) board.getPiece(row, column);
+        }
 
         if (pieceTest != null) {
             clearPossibilities();
+
+
             this.optionList = pieceTest.getAllPossibilities(board);
+
+
             for (Position option : optionList) {
                 UI.Button optionButton = getButtonByXAndY(option.getRow(), option.getColumn());
                 if (optionButton != null) {
-                    optionButton.setBorder(new LineBorder(Color.YELLOW));
+                    optionButton.setBorder(new LineBorder(Color.YELLOW, 3));
                     optionButton.setPossiblePlay(true);
                 }
             }
@@ -93,8 +104,16 @@ public class Board extends JPanel {
             this.columnPiece = column;
         } else if (buttonClicked.isPossiblePlay()) {
             Position positionTryed = new Position(row, column);
-            pieceTest = (Pawn) board.getPiece(rowPiece, columnPiece);
+            try {
+                pieceTest = (Pawn) board.getPiece(rowPiece, columnPiece);
+            } catch (Exception e) {
+                pieceTest = (Lady) board.getPiece(rowPiece, columnPiece);
+            }
+
+
             String response = pieceTest.userPlay(this.turn, this.optionList, positionTryed, board);
+
+
             String[] responseArray = response.split(" ");
             int quantPiecesEat = Integer.parseInt(responseArray[1]);
             clearPossibilities();
@@ -135,6 +154,7 @@ public class Board extends JPanel {
     // Method to update the board matrix
     public void updateBoardMatrix(JFrame frame, Status statusPanel) {
         board.alocatingBoard();
+        board.verifyPromotion();
         this.createBoard(frame, statusPanel); // Refresh the board layout
     }
 
@@ -154,4 +174,5 @@ public class Board extends JPanel {
         this.setNumberWhitePieces(12);
         statusPanel.setText("Turn: " + this.turn + " | " + "Black pieces: " + this.numberBlackPieces + " - White pieces: " + this.numberWhitePieces );
     }
+
 }

@@ -1,5 +1,7 @@
 package UI;
 
+import Entities.Lady;
+import Entities.Pawn;
 import Entities.Piece;
 import Entities.Position;
 
@@ -21,9 +23,16 @@ public class Button extends JButton {
 
     public void setImagesButton() {
         ImageIcon pawnWhiteImage = new ImageIcon("src/images/pawnWhite.png");
+        ImageIcon pawnBlackImage = new ImageIcon("src/images/pawnBlack.png");
+        if (piece != null) {
+            if (piece instanceof Lady) {
+                pawnWhiteImage = new ImageIcon("src/images/download.png");
+                pawnBlackImage = new ImageIcon("src/images/download.png");
+            }
+        }
+ 
         pawnWhiteImage.setImage(pawnWhiteImage.getImage().getScaledInstance(45,45, Image.SCALE_DEFAULT));
 
-        ImageIcon pawnBlackImage = new ImageIcon("src/images/pawnBlack.png");
         pawnBlackImage.setImage(pawnBlackImage.getImage().getScaledInstance(45,45, Image.SCALE_DEFAULT));
 
         if (this.piece != null) {

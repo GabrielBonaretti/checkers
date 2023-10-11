@@ -1,11 +1,11 @@
 package Entities;
 
-import UI.Board;
+import Interfaces.PawnInterface;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Pawn extends Piece{
+public class Pawn extends Piece implements PawnInterface {
     public Pawn(String name, Position position, String team) {
         super(name, position, team);
     }
@@ -74,6 +74,7 @@ public class Pawn extends Piece{
         Position position3;
         Position position4;
 
+
         position1 = this.tryPossibilities("NEGATIVE", "NEGATIVE", board);
         arrayPositions.add(position1);
 
@@ -125,8 +126,18 @@ public class Pawn extends Piece{
                     }
                 } catch (Exception ignored) {}
             } else if (piece == null) {
-                position.setRow(rowPlay);
-                position.setColumn(columnPlay);
+                if (Objects.equals(this.team, "black")) {
+                    if (rowPlay == this.getPositionRow()-1 && columnPlay == this.getPositionColumn()-1 || rowPlay == this.getPositionRow()-1 && columnPlay == this.getPositionColumn()+1) {
+                        position.setRow(rowPlay);
+                        position.setColumn(columnPlay);
+                    }
+                } else {
+                    if (rowPlay == this.getPositionRow()+1 && columnPlay == this.getPositionColumn()-1 || rowPlay == this.getPositionRow()+1 && columnPlay == this.getPositionColumn()+1) {
+                        position.setRow(rowPlay);
+                        position.setColumn(columnPlay);
+                    }
+                }
+
             }
         } catch (Exception ignored) {}
 
