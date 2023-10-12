@@ -26,8 +26,8 @@ public class Button extends JButton {
         ImageIcon pawnBlackImage = new ImageIcon("src/images/pawnBlack.png");
         if (piece != null) {
             if (piece instanceof Lady) {
-                pawnWhiteImage = new ImageIcon("src/images/download.png");
-                pawnBlackImage = new ImageIcon("src/images/download.png");
+                pawnWhiteImage = new ImageIcon("src/images/ladyWhite.png");
+                pawnBlackImage = new ImageIcon("src/images/ladyBlack.png");
             }
         }
  
@@ -50,7 +50,7 @@ public class Button extends JButton {
         } else if (position.getRow() % 2 == 1 && position.getColumn() % 2 == 1) {
             this.setBackground(Color.WHITE);
         } else {
-            this.setBackground(new Color(30, 30, 30));
+            this.setBackground(new Color(60, 60, 60));
         }
     }
 
