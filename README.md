@@ -3,6 +3,7 @@
 This small project is a checkers game made in Java, to train my knowledge of object-oriented programming (OOP) and the native Java graphical tool (Java Swing). The game is intended to be the same as the physical game, with all its features. But, we currently have the following features:
 
 ## Actualy features:
+  - Code are commented;
   - Game logic is finished;
   - Have promotions to queens;
   - Turn logic of all pieces;

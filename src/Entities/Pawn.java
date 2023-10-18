@@ -5,11 +5,31 @@ import Interfaces.PawnInterface;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * The `Pawn` class represents a game piece of type "Pawn" in a board game.
+ * It extends the `Piece` class and implements the `PawnInterface`.
+ */
 public class Pawn extends Piece implements PawnInterface {
+    /**
+     * Constructor for the `Pawn` class.
+     *
+     * @param name      The name of the pawn piece.
+     * @param position  The initial position of the pawn piece on the game board.
+     * @param team      The team to which the pawn piece belongs ("white" or "black").
+     */
     public Pawn(String name, Position position, String team) {
         super(name, position, team);
     }
 
+    /**
+     * Handles a user's attempt to make a move with the pawn piece and updates the game board accordingly.
+     *
+     * @param turn              The current turn's team ("white" or "black").
+     * @param arrayPositions    An `ArrayList` of possible move positions for the pawn piece.
+     * @param positionTryedParam The position the user is attempting to move the pawn piece to.
+     * @param board             The game board on which the pawn piece is placed.
+     * @return A response string indicating the result of the move attempt.
+     */
     public String userPlay(String turn, ArrayList<Position> arrayPositions, Position positionTryedParam, Table board) {
         String response;
         int countPiecesEat = 0;
@@ -37,6 +57,15 @@ public class Pawn extends Piece implements PawnInterface {
         return "Deualgumacoisaerrado";
     }
 
+    /**
+     * Tries to make a move with the pawn piece and handle piece eating in a specific direction.
+     *
+     * @param positionTryedParam The position the user is attempting to move the pawn piece to.
+     * @param operationRow       The direction of row movement (e.g., "NEGATIVE" or "POSITIVE").
+     * @param operationColumn    The direction of column movement (e.g., "NEGATIVE" or "POSITIVE").
+     * @param board              The game board on which the pawn piece is placed.
+     * @return A response string indicating the result of the move attempt.
+     */
     public String tryPlay(Position positionTryedParam, String operationRow, String operationColumn, Table board) {
         int rowPlay;
         int columnPlay;
@@ -67,6 +96,12 @@ public class Pawn extends Piece implements PawnInterface {
         return "NãoComeu "+0;
     }
 
+    /**
+     * Retrieves all possible move positions for the pawn piece, considering the game board's current state.
+     *
+     * @param board The game board on which the pawn piece is placed.
+     * @return An `ArrayList` of `Position` objects representing possible move positions.
+     */
     public ArrayList<Position> getAllPossibilities(Table board) {
         ArrayList<Position> arrayPositions = new ArrayList<Position>() ;
         Position position1;
@@ -90,6 +125,14 @@ public class Pawn extends Piece implements PawnInterface {
         return arrayPositions;
     }
 
+    /**
+     * Tries different move possibilities in various directions and returns a `Position` object.
+     *
+     * @param operationRow    The direction of row movement (e.g., "NEGATIVE" or "POSITIVE").
+     * @param operationColumn The direction of column movement (e.g., "NEGATIVE" or "POSITIVE").
+     * @param board           The game board on which the pawn piece is placed.
+     * @return A `Position` object representing a possible move position.
+     */
     public Position tryPossibilities(String operationRow, String operationColumn, Table board) {
         Position position = new Position();
         int rowPlay;
@@ -144,6 +187,14 @@ public class Pawn extends Piece implements PawnInterface {
         return position;
     }
 
+    /**
+     * Checks if the pawn piece can make another move to eat an opponent's piece.
+     *
+     * @param arrayListPosition An `ArrayList` of possible move positions for the pawn piece.
+     * @param row              The row of the piece being considered for eating.
+     * @param column           The column of the piece being considered for eating.
+     * @return `true` if the pawn piece can eat again in the current turn; otherwise, `false`.
+     */
     public boolean eatAgain(ArrayList<Position> arrayListPosition, int row, int column) {
         for (Position positionOption : arrayListPosition) {
             if (Math.abs(positionOption.getRow()-row) == 2 && Math.abs(positionOption.getColumn()-column) == 2) {

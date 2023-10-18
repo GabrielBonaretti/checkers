@@ -13,6 +13,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * The `Board` class represents the graphical user interface for a board game. It handles the game board's
+ * visual representation, user interactions, and game logic.
+ */
 public class Board extends JPanel {
     private ArrayList<Position> optionList = new ArrayList<>();
     private final Table board = new Table();
@@ -22,21 +26,39 @@ public class Board extends JPanel {
     private int columnPiece;
     private int rowPiece;
 
-
+    /**
+     * Sets the number of white pieces on the board.
+     *
+     * @param numberWhitePieces The number of white pieces.
+     */
     public void setNumberWhitePieces(int numberWhitePieces) {
         this.numberWhitePieces = numberWhitePieces;
     }
 
+    /**
+     * Sets the number of black pieces on the board.
+     *
+     * @param numberBlackPieces The number of black pieces.
+     */
     public void setNumberBlackPieces(int numberBlackPieces) {
         this.numberBlackPieces = numberBlackPieces;
     }
 
+    /**
+     * Constructs a new `Board` instance, initializing the game board's visual representation.
+     */
     public Board() {
         super(new GridLayout(8, 8));
         this.setBounds(-3, 29, 590, 563);
 
     }
 
+    /**
+     * Creates and updates the graphical representation of the game board within the provided frame.
+     *
+     * @param frame        The main game frame.
+     * @param statusPanel  The status panel for displaying game information.
+     */
     public void createBoard(JFrame frame, Status statusPanel) {
         this.removeAll(); // Clear the existing board
 
@@ -66,6 +88,13 @@ public class Board extends JPanel {
         frame.repaint();    // Repaint the frame to reflect changes
     }
 
+    /**
+     * Retrieves a button element on the game board based on its row and column indices.
+     *
+     * @param x The row index.
+     * @param y The column index.
+     * @return The `UI.Button` element corresponding to the specified row and column, or `null` if not found.
+     */
     public UI.Button getButtonByXAndY(int x, int y) {
         try {
             return (UI.Button) this.getComponent(x * 8 + y);
@@ -74,6 +103,14 @@ public class Board extends JPanel {
         }
     }
 
+    /**
+     * Handles user interactions when a game piece is selected, highlighting possible move positions and updating the board.
+     *
+     * @param row          The row of the selected game piece.
+     * @param column       The column of the selected game piece.
+     * @param frame        The main game frame.
+     * @param statusPanel  The status panel for displaying game information.
+     */
     public void selectPossibilities(int row, int column, JFrame frame, Status statusPanel) {
         UI.Button buttonClicked = getButtonByXAndY(row, column);
 
@@ -151,13 +188,21 @@ public class Board extends JPanel {
         statusPanel.setText("Turn: " + this.turn + " | " + "Black pieces: " + this.numberBlackPieces + " - White pieces: " + this.numberWhitePieces );
     }
 
-    // Method to update the board matrix
+    /**
+     * Updates the game board's matrix, handling piece allocation, promotion, and board layout refresh.
+     *
+     * @param frame        The main game frame.
+     * @param statusPanel  The status panel for displaying game information.
+     */
     public void updateBoardMatrix(JFrame frame, Status statusPanel) {
         board.alocatingBoard();
         board.verifyPromotion();
         this.createBoard(frame, statusPanel); // Refresh the board layout
     }
 
+    /**
+     * Clears the highlighting of possible move positions on the game board.
+     */
     public void clearPossibilities() {
         for (int i = 0; i < 64; i++) {
             UI.Button button = (Button) this.getComponent(i);
@@ -166,6 +211,12 @@ public class Board extends JPanel {
         }
     }
 
+    /**
+     * Resets the game board to its initial state, including piece allocation, turn reset, and piece count.
+     *
+     * @param frame        The main game frame.
+     * @param statusPanel  The status panel for displaying game information.
+     */
     public void resetBoard(JFrame frame, Status statusPanel) {
         board.creatingPieces();
         this.createBoard(frame, statusPanel);

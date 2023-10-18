@@ -5,12 +5,29 @@ import Interfaces.LadyInterface;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * The `Lady` class represents a game piece of type "Lady" in a board game.
+ * It extends the `Piece` class and implements the `LadyInterface`.
+ */
 public class Lady extends Piece implements LadyInterface {
 
+    /**
+     * Constructor for the `Lady` class.
+     *
+     * @param name      The name of the lady piece.
+     * @param position  The initial position of the lady piece on the game board.
+     * @param team      The team to which the lady piece belongs ("white" or "black").
+     */
     public Lady(String name, Position position, String team) {
         super(name, position, team);
     }
 
+    /**
+     * Retrieves all possible move positions for the lady piece, considering the game board's current state.
+     *
+     * @param board The game board on which the lady piece is placed.
+     * @return An `ArrayList` of `Position` objects representing possible move positions.
+     */
     public ArrayList<Position> getAllPossibilities(Table board) {
         ArrayList<Position> arrayPositions = new ArrayList<Position>() ;
 
@@ -35,6 +52,14 @@ public class Lady extends Piece implements LadyInterface {
         return arrayPositions;
     }
 
+    /**
+     * Tries different move possibilities in a specific direction, considering the game board's state.
+     *
+     * @param operationRow    The direction of row movement (e.g., "NEGATIVE" or "POSITIVE").
+     * @param operationColumn The direction of column movement (e.g., "NEGATIVE" or "POSITIVE").
+     * @param board           The game board on which the lady piece is placed.
+     * @return An `ArrayList` of `Position` objects representing possible move positions in a specific direction.
+     */
     public ArrayList<Position> tryPossibilities(String operationRow, String operationColumn, Table board) {
         ArrayList<Position> diagonalPossibilities = new ArrayList<Position>();
         int countSequencePieces = 0;
@@ -101,6 +126,15 @@ public class Lady extends Piece implements LadyInterface {
         return diagonalPossibilities;
     }
 
+    /**
+     * Handles a user's attempt to make a move with the lady piece and updates the game board accordingly.
+     *
+     * @param turn              The current turn's team ("white" or "black").
+     * @param arrayPositions    An `ArrayList` of possible move positions for the lady piece.
+     * @param positionTryedParam The position the user is attempting to move the lady piece to.
+     * @param board             The game board on which the lady piece is placed.
+     * @return A response string indicating the result of the move attempt.
+     */
     public String userPlay(String turn, ArrayList<Position> arrayPositions, Position positionTryedParam, Table board) {
         String response;
         int countPiecesEat = 0;
@@ -163,6 +197,14 @@ public class Lady extends Piece implements LadyInterface {
         return response;
     }
 
+    /**
+     * Checks if the lady piece can make another move to eat an opponent's piece.
+     *
+     * @param arrayListPosition An `ArrayList` of possible move positions for the lady piece.
+     * @param row              The row of the piece being considered for eating.
+     * @param column           The column of the piece being considered for eating.
+     * @return `true` if the lady piece can eat again in the current turn; otherwise, `false`.
+     */
     public boolean eatAgain(ArrayList<Position> arrayListPosition, int row, int column) {
         int rowTest = 10;
         int columnTest = 10;

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Nova pasta.iml" filepath="$PROJECT_DIR$/Nova pasta.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Checkers.iml" filepath="$PROJECT_DIR$/Checkers.iml" />
     </modules>
   </component>
 </project>

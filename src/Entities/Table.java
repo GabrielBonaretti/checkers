@@ -3,14 +3,26 @@ package Entities;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * The `Table` class represents the game board in a board game. It maintains a matrix of game pieces
+ * and provides various methods to manipulate and manage the game state.
+ */
 public class Table {
+    /**
+     * A 2D array representing the game board, where each cell may contain a game piece or be null.
+     */
     public Piece[][] matrix = new Piece[8][8];
 
-
+    /**
+     * Constructor for the `Table` class. Initializes the game board by creating and placing game pieces.
+     */
     public Table() {
         creatingPieces();
     }
 
+    /**
+     * Fills the game board matrix with game pieces according to game rules.
+     */
     public void creatingPieces() {
         // Fill the matrix with values
         int count = 0;
@@ -40,6 +52,10 @@ public class Table {
         }
     }
 
+    /**
+     * Allocates game pieces on the board based on their current positions.
+     * Handles potential promotions from Pawn to Lady.
+     */
     public void alocatingBoard() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -70,10 +86,20 @@ public class Table {
         }
     }
 
+    /**
+     * Retrieves the game piece at a specified position on the board.
+     *
+     * @param row    The row of the position.
+     * @param column The column of the position.
+     * @return The game piece at the specified position or `null` if the position is empty.
+     */
     public Piece getPiece(int row, int column) {
         return matrix[row][column];
     }
 
+    /**
+     * Checks for promotions of Pawns to Ladies and updates the board accordingly.
+     */
     public void verifyPromotion() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
